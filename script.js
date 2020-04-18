@@ -51,7 +51,7 @@ function handleCardFlip() {
     clickCard.addEventListener("click", (element) => {
         let targetClass = element.target.parentElement;
         console.log(targetClass);
-        !targetClass.classList.contains("card--flipped") ? targetClass.classList.add("card--flipped") : targetClass.classList.remove("card--flipped")
+        !targetClass.classList.contains("card--flipped") ? targetClass.classList.add("card--flipped") : targetClass.classList.remove("card--flipped");
 
         // document.querySelector(".card__face").setAttribute("style", "transform: rotateY(180deg)");
         // document.querySelector(".card__face").setAttribute("style", "backface-visibility: visible");
