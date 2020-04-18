@@ -48,16 +48,35 @@ function startGame() {
 
 function handleCardFlip() {
     let clickCard = document.querySelector(".game-content");
+    let clickCounter = 0;
+    var visibleCards = [];
+
     clickCard.addEventListener("click", (element) => {
+        let timeOut;
         let targetClass = element.target.parentElement;
-        console.log(targetClass);
-        !targetClass.classList.contains("card--flipped") ? targetClass.classList.add("card--flipped") : targetClass.classList.remove("card--flipped");
+        visibleCards[clickCounter] = targetClass;
 
-        // document.querySelector(".card__face").setAttribute("style", "transform: rotateY(180deg)");
-        // document.querySelector(".card__face").setAttribute("style", "backface-visibility: visible");
-        // document.querySelector(".card__face--front").setAttribute("style", "backface-visibility: visible");
+        if (clickCounter < 2) {
+            console.log(clickCounter);
+            if (!targetClass.classList.contains("card--flipped")) {
+                targetClass.classList.add("card--flipped");
+            } else {
+                targetClass.classList.remove("card--flipped");
+            }
+        }
+        clickCounter++;
+        if (clickCounter === 2) {
+            timeOut = setTimeout(function() {
+                for (i in visibleCards) {
+                    visibleCards[i].classList.remove("card--flipped");
+                    clickCounter = 0;
+                }
+            }, 1500);
+        }
+    });
 
-    })
+
+
 
 }
 
