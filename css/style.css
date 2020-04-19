@@ -90,14 +90,15 @@ body {
     height: 600px;
 }
 
-.game-content {
+
+/* .game-content {
     display: none;
     grid-gap: 20px;
     grid-template-columns: 1fr 1fr;
     perspective: 600px;
     width: 600px;
     height: 600px;
-}
+} */
 
 .card {
     position: relative;
