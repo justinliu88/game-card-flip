@@ -12,11 +12,22 @@ const CARD_TECHS = [
     'aws'
 ];
 
-const cardObj = {
+const cardObjLvl1 = {
     css3: '<div class="card css3" data-tech="css3"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
     html5: '<div class="card html5" data-tech="html5"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>'
 }
-var cardKeys = Object.keys(cardObj);
+
+const cardObjLvl2 = {
+    css3: '<div class="card css3" data-tech="css3"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+    html5: '<div class="card html5" data-tech="html5"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+    js: '<div class="card js" data-tech="js"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+    react: '<div class="card react" data-tech="react"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+    nodejs: '<div class="card nodejs" data-tech="nodejs"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+    sass: '<div class="card sass" data-tech="sass"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+    linkedin: '<div class="card linkedin" data-tech="linkedin"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+    heroku: '<div class="card heroku" data-tech="heroku"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
+}
+
 
 // only list out some of the properties,
 // add more when needed
@@ -24,6 +35,8 @@ const game = {
     score: 0,
     level: 1,
     timer: 60,
+    cardKeysLvl1: Object.keys(cardObjLvl1),
+    cardKeysLvl2: Object.keys(cardObjLvl2),
     timerDisplay: null,
     scoreDisplay: null,
     levelDisplay: null,
@@ -33,6 +46,7 @@ const game = {
     currentCard: null,
     cardFlipped: false,
     lockBoard: false,
+    matchPair: 0,
     // and much more
 };
 
@@ -59,19 +73,19 @@ function startGame() {
         let totalCards = 0;
         let cssCount = 0;
         let htmlCount = 0;
-        //console.log(cardObj.css3);
+        //console.log(cardObjLvl1.css3);
         while (totalCards < 4) {
-            let child = Math.floor(Math.random() * cardKeys.length);
-            //console.log(cardKeys[child]);
+            let child = Math.floor(Math.random() * game.cardKeysLvl1.length);
+            //console.log(game.cardKeysLvl1[child]);
 
-            if (cssCount < 2 && (cardKeys[child] == "css3")) {
-                document.querySelector(".game-board").innerHTML += "" + cardObj[cardKeys[child]];
+            if (cssCount < 2 && (game.cardKeysLvl1[child] == "css3")) {
+                document.querySelector(".game-board").innerHTML += "" + cardObjLvl1[game.cardKeysLvl1[child]];
                 cssCount++; //1 2
                 totalCards++; //1 2
             }
 
-            if (htmlCount < 2 && (cardKeys[child] == "html5")) {
-                document.querySelector(".game-board").innerHTML += "" + cardObj[cardKeys[child]];
+            if (htmlCount < 2 && (game.cardKeysLvl1[child] == "html5")) {
+                document.querySelector(".game-board").innerHTML += "" + cardObjLvl1[game.cardKeysLvl1[child]];
                 htmlCount++;
                 totalCards++;
             }
@@ -79,7 +93,9 @@ function startGame() {
 
         const cards = document.querySelectorAll(".card");
         cards.forEach(card => card.addEventListener('click', handleCardFlip));
-        [game.previousCard, game.currentCard] = [null, null];
+
+        //clear all the flag
+        [game.previousCard, game.currentCard, game.cardFlipped, game.lockBoard, game.matchPair] = [null, null, false, false, 0];
         //console.log(cssCount, htmlCount);
     })
 }
@@ -107,7 +123,19 @@ function handleCardFlip() {
         if (game.previousCard.dataset.tech === game.currentCard.dataset.tech) {
             game.previousCard.removeEventListener('click', handleCardFlip);
             game.currentCard.removeEventListener('click', handleCardFlip);
-            console.log(game.previousCard.dataset.tech, game.currentCard.dataset.tech)
+            //console.log(game.previousCard.dataset.tech, game.currentCard.dataset.tech)
+            game.matchPair++;
+            if (game.level === 1 && game.matchPair === 2) {
+                console.log(game.matchPair, game.level);
+                setTimeout(() => {
+                    nextLevel();
+                }, 1500);
+            } else if (game.level === 2 && game.matchPair === 8) {
+                console.log(game.matchPair, game.level);
+                setTimeout(() => {
+                    nextLevel();
+                }, 1500);
+            }
         } else {
             game.lockBoard = true;
             setTimeout(() => {
@@ -121,7 +149,72 @@ function handleCardFlip() {
     }
 }
 
-function nextLevel() {}
+function nextLevel() {
+    let totalCardsLvl2 = 0;
+    let cssCount = 0;
+    let htmlCount = 0;
+    let jsCount = 0;
+    let reactCount = 0;
+    let nodejsCount = 0;
+    let sassCount = 0;
+    let linkedinCount = 0;
+    let herokuCount = 0;
+    game.level++;
+    document.querySelector(".game-board").innerHTML = "";
+    document.querySelector(".game-board").setAttribute("style", "grid-template-columns: 1fr 1fr 1fr 1fr");
+    while (totalCardsLvl2 < 16) {
+        let child = Math.floor(Math.random() * game.cardKeysLvl2.length);
+        //console.log(game.cardKeysLvl1[child]);
+
+        if (cssCount < 2 && (game.cardKeysLvl2[child] == "css3")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            cssCount++; //1 2
+            totalCardsLvl2++; //1 2
+        }
+
+        if (htmlCount < 2 && (game.cardKeysLvl2[child] == "html5")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            htmlCount++;
+            totalCardsLvl2++;
+        }
+        if (jsCount < 2 && (game.cardKeysLvl2[child] == "js")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            jsCount++;
+            totalCardsLvl2++;
+        }
+        if (reactCount < 2 && (game.cardKeysLvl2[child] == "react")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            reactCount++;
+            totalCardsLvl2++;
+        }
+        if (nodejsCount < 2 && (game.cardKeysLvl2[child] == "nodejs")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            nodejsCount++;
+            totalCardsLvl2++;
+        }
+        if (sassCount < 2 && (game.cardKeysLvl2[child] == "sass")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            sassCount++;
+            totalCardsLvl2++;
+        }
+        if (linkedinCount < 2 && (game.cardKeysLvl2[child] == "linkedin")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            linkedinCount++;
+            totalCardsLvl2++;
+        }
+        if (herokuCount < 2 && (game.cardKeysLvl2[child] == "heroku")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl2[game.cardKeysLvl2[child]];
+            herokuCount++;
+            totalCardsLvl2++;
+        }
+        const cards = document.querySelectorAll(".card");
+        cards.forEach(card => card.addEventListener('click', handleCardFlip));
+
+        //clear all the flag
+        [game.previousCard, game.currentCard, game.cardFlipped, game.lockBoard, game.matchPair] = [null, null, false, false, 0];
+
+    }
+}
 
 function handleGameOver() {}
 
