@@ -16,6 +16,7 @@ const cardObj = {
     css3: '<div class="card css3" data-tech="css3"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>',
     html5: '<div class="card html5" data-tech="html5"><div class="card__face card__face--front"></div><div class="card__face card__face--back"></div></div>'
 }
+var cardKeys = Object.keys(cardObj);
 
 // only list out some of the properties,
 // add more when needed
@@ -27,13 +28,16 @@ const game = {
     scoreDisplay: null,
     levelDisplay: null,
     timerInterval: null,
-    startButton: null
-        // and much more
+    startButton: null,
+    previousCard: null,
+    currentCard: null,
+    cardFlipped: false,
+    lockBoard: false,
+    // and much more
 };
 
 setGame();
 startGame();
-handleCardFlip();
 /*******************************************
 /     game process
 /******************************************/
@@ -43,7 +47,6 @@ function setGame() {
 
 function startGame() {
     let button = document.querySelector(".game-stats__button");
-    let cardKeys = Object.keys(cardObj);
 
     // console.log(cardItem);
     button.addEventListener("click", () => {
@@ -66,47 +69,56 @@ function startGame() {
                 cssCount++; //1 2
                 totalCards++; //1 2
             }
+
             if (htmlCount < 2 && (cardKeys[child] == "html5")) {
                 document.querySelector(".game-board").innerHTML += "" + cardObj[cardKeys[child]];
                 htmlCount++;
                 totalCards++;
             }
         }
-        console.log(cssCount, htmlCount);
+
+        const cards = document.querySelectorAll(".card");
+        cards.forEach(card => card.addEventListener('click', handleCardFlip));
+        [game.previousCard, game.currentCard] = [null, null];
+        //console.log(cssCount, htmlCount);
     })
 }
 
 function handleCardFlip() {
-    let clickCard = document.querySelector(".game-board");
-    let checkCard = 0;
-    var visibleCards = [];
-    //console.log(clickCard);
-    clickCard.addEventListener("click", (element) => {
-        let timeOut;
-        let targetClass = element.target.parentElement;
-        visibleCards[checkCard] = targetClass;
+    if (game.lockBoard) {
+        return;
+    }
 
-        if (checkCard < 2) {
-            console.log(checkCard);
-            if (!targetClass.classList.contains("card--flipped")) {
-                targetClass.classList.add("card--flipped");
-                checkCard++;
-            } else {
-                targetClass.classList.remove("card--flipped");
-                checkCard--;
+    if (this === game.previousCard) {
+        this.classList.remove('card--flipped');
+        game.previousCard = null;
+        game.cardFlipped = false;
+        return;
+    }
+    //console.log("clicked");
+    this.classList.add('card--flipped');
 
-            }
-        }
-
-        if (checkCard === 2) {
-            timeOut = setTimeout(function() {
-                for (i in visibleCards) {
-                    visibleCards[i].classList.remove("card--flipped");
-                    checkCard = 0;
-                }
+    if (!game.cardFlipped) {
+        game.cardFlipped = true;
+        game.previousCard = this;
+    } else {
+        game.cardFlipped = false;
+        game.currentCard = this;
+        if (game.previousCard.dataset.tech === game.currentCard.dataset.tech) {
+            game.previousCard.removeEventListener('click', handleCardFlip);
+            game.currentCard.removeEventListener('click', handleCardFlip);
+            console.log(game.previousCard.dataset.tech, game.currentCard.dataset.tech)
+        } else {
+            game.lockBoard = true;
+            setTimeout(() => {
+                game.previousCard.classList.remove('card--flipped');
+                game.currentCard.classList.remove('card--flipped');
+                game.lockBoard = false;
+                game.cardFlipped = false;
+                [game.previousCard, game.currentCard] = [null, null];
             }, 1500);
         }
-    });
+    }
 }
 
 function nextLevel() {}
