@@ -51,12 +51,12 @@ const game = {
 };
 
 setGame();
-startGame();
+
 /*******************************************
 /     game process
 /******************************************/
 function setGame() {
-    // register any element in your game object
+    startGame();
 }
 
 function startGame() {
@@ -64,8 +64,10 @@ function startGame() {
 
     // console.log(cardItem);
     button.addEventListener("click", () => {
-        document.querySelector(".game-board").setAttribute("style", "grid-template-columns: 1fr 1fr");
-        //document.querySelector(".game-instruction").style.display = "none";
+
+        countDownTimer();
+
+        document.querySelector(".game-board").style.gridTemplateColumns = "1fr 1fr";
 
         //TODO:debug purpose only
         document.querySelector(".game-board").innerHTML = "";
@@ -98,6 +100,23 @@ function startGame() {
         [game.previousCard, game.currentCard, game.cardFlipped, game.lockBoard, game.matchPair] = [null, null, false, false, 0];
         //console.log(cssCount, htmlCount);
     })
+}
+
+function countDownTimer() {
+    let countDown = setInterval(() => {
+        game.timer--;
+        document.querySelector(".game-timer__bar").innerHTML = game.timer + "s";
+        if (game.timer === 0) {
+            clearInterval(countDown);
+            alert("GAME OVER!");
+            game.timer = 60;
+        }
+    }, 1000)
+
+    if (game.matchPair === 2 || game.matchPair === 8) {
+        clearInterval(countDown);
+        game.timer = 60;
+    }
 }
 
 function handleCardFlip() {
@@ -160,8 +179,10 @@ function nextLevel() {
     let linkedinCount = 0;
     let herokuCount = 0;
     game.level++;
+    countDownTimer();
+    document.querySelector(".game-stats__level--value").innerHTML = game.level;
     document.querySelector(".game-board").innerHTML = "";
-    document.querySelector(".game-board").setAttribute("style", "grid-template-columns: 1fr 1fr 1fr 1fr");
+    document.querySelector(".game-board").style.gridTemplateColumns = "1fr 1fr 1fr 1fr";;
     while (totalCardsLvl2 < 16) {
         let child = Math.floor(Math.random() * game.cardKeysLvl2.length);
         //console.log(game.cardKeysLvl1[child]);
