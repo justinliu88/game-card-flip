@@ -116,13 +116,18 @@ function startGame() {
 }
 
 function countDownTimer() {
+    let timerBarWidth = 100;
     let countDown = setInterval(() => {
         game.timer--;
+        timerBarWidth -= 1.66;
         document.querySelector(".game-timer__bar").innerHTML = game.timer + "s";
+        document.querySelector(".game-timer__bar").style.width = timerBarWidth + "%"
+
         if (game.timer === 0) {
             clearInterval(countDown);
             alert("GAME OVER!");
             game.timer = 60;
+            game.lockBoard = true;
         }
     }, 1000)
 
