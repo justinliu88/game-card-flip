@@ -74,10 +74,12 @@ function setGame() {
 
 function startGame() {
     let button = document.querySelector(".game-stats__button");
+    game.level = 1;
 
     // console.log(cardItem);
     button.addEventListener("click", () => {
-
+        document.querySelector(".game-stats__button").innerHTML = "End Game";
+        document.querySelector(".game-stats__level--value").innerHTML = game.level;
         countDownTimer();
 
         document.querySelector(".game-board").style.gridTemplateColumns = "1fr 1fr";
