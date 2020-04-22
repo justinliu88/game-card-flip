@@ -60,6 +60,8 @@ const game = {
     cardFlipped: false,
     lockBoard: false,
     matchPair: 0,
+    gameStatus: false,
+    countDown: null,
     // and much more
 };
 
@@ -76,75 +78,44 @@ function startGame() {
     let button = document.querySelector(".game-stats__button");
     game.level = 1;
 
+    button.addEventListener("click", startOrEndButton)
+}
 
-
-    // console.log(cardItem);
-    button.addEventListener("click", () => {
-        document.querySelector(".game-stats__button").innerHTML = "End Game";
+function startOrEndButton() {
+    if (!game.gameStatus) {
+        game.gameStatus = true;
+        handleNewGame();
+    } else {
+        game.gameStatus = false;
+        game.lockBoard = true;
         handleGameOver();
 
-        document.querySelector(".game-stats__level--value").innerHTML = game.level;
-        countDownTimer();
-
-        document.querySelector(".game-board").style.gridTemplateColumns = "1fr 1fr";
-
-        //TODO:debug purpose only
-        document.querySelector(".game-board").innerHTML = "";
-
-        let totalCards = 0;
-        let cssCount = 0;
-        let htmlCount = 0;
-        //console.log(cardObjLvl1.css3);
-        while (totalCards < 4) {
-            let child = Math.floor(Math.random() * game.cardKeysLvl1.length);
-            //console.log(game.cardKeysLvl1[child]);
-
-            if (cssCount < 2 && (game.cardKeysLvl1[child] == "css3")) {
-                document.querySelector(".game-board").innerHTML += "" + cardObjLvl1[game.cardKeysLvl1[child]];
-                cssCount++; //1 2
-                totalCards++; //1 2
-            }
-
-            if (htmlCount < 2 && (game.cardKeysLvl1[child] == "html5")) {
-                document.querySelector(".game-board").innerHTML += "" + cardObjLvl1[game.cardKeysLvl1[child]];
-                htmlCount++;
-                totalCards++;
-            }
-        }
-
-        const cards = document.querySelectorAll(".card");
-        cards.forEach(card => card.addEventListener('click', handleCardFlip));
-
-        //clear all the flag
-        [game.previousCard, game.currentCard, game.cardFlipped, game.lockBoard, game.matchPair, game.timer, game.level] = [null, null, false, false, 0, 60, 1];
-        //console.log(cssCount, htmlCount);
-    })
+        document.querySelector(".game-stats__button").removeEventListener("click", startOrEndButton);
+    }
 }
 
 function countDownTimer() {
     let timerBarWidth = 100;
-    let countDown = setInterval(() => {
-        console.log(timerBarWidth);
+    game.countDown = setInterval(() => {
         game.timer--;
         timerBarWidth -= 1.66;
         document.querySelector(".game-timer__bar").innerHTML = game.timer + "s";
         document.querySelector(".game-timer__bar").style.width = timerBarWidth + "%"
 
         if (game.timer === 0) {
-            clearInterval(countDown);
+            clearInterval(game.countDown);
             alert("GAME OVER!");
             game.timer = 60;
             game.lockBoard = true;
-
+            return;
         }
 
         if (game.matchPair === 2 || game.matchPair === 8) {
-            clearInterval(countDown);
+            clearInterval(game.countDown);
             game.timer = 60;
             timerBarWidth = 100;
         }
-    }, 1000)
-
+    }, 1000);
 }
 
 function handleCardFlip() {
@@ -349,9 +320,56 @@ function thirdLevel() {
     }
 }
 
+function handleNewGame() {
+    document.querySelector(".game-stats__button").innerHTML = "End Game";
+    game.gameStatus = true;
+
+    document.querySelector(".game-stats__level--value").innerHTML = game.level;
+    countDownTimer();
+
+    document.querySelector(".game-instruction").style.display = "none";
+    document.querySelector(".game-board").style.gridTemplateColumns = "1fr 1fr";
+
+    //TODO:debug purpose only
+    //document.querySelector(".game-board").innerHTML = "";
+
+    checkPair();
+
+    const cards = document.querySelectorAll(".card");
+    cards.forEach(card => card.addEventListener('click', handleCardFlip));
+
+    //clear all the flag
+    [game.previousCard, game.currentCard, game.cardFlipped, game.lockBoard, game.matchPair, game.timer, game.level] = [null, null, false, false, 0, 60, 1];
+    //console.log(cssCount, htmlCount);
+}
+
+function checkPair() {
+    let totalCards = 0;
+    let cssCount = 0;
+    let htmlCount = 0;
+    //console.log(cardObjLvl1.css3);
+    while (totalCards < 4) {
+        let child = Math.floor(Math.random() * game.cardKeysLvl1.length);
+        //console.log(game.cardKeysLvl1[child]);
+
+        if (cssCount < 2 && (game.cardKeysLvl1[child] == "css3")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl1[game.cardKeysLvl1[child]];
+            cssCount++; //1 2
+            totalCards++; //1 2
+        }
+
+        if (htmlCount < 2 && (game.cardKeysLvl1[child] == "html5")) {
+            document.querySelector(".game-board").innerHTML += "" + cardObjLvl1[game.cardKeysLvl1[child]];
+            htmlCount++;
+            totalCards++;
+        }
+    }
+}
+
 function handleGameOver() {
-    let endGame = document.querySelector(".game-stats__button").innerHTML;
-    console.log(endGame);
+    handleCardFlip();
+    clearInterval(game.countDown);
+    alert("Congratulations, your score is 0");
 }
 
 /*******************************************
