@@ -105,14 +105,14 @@ function countDownTimer() {
         if (game.timer === 0) {
             clearInterval(game.countDown);
             alert("GAME OVER!");
-            game.timer = 60;
+            //game.timer = 60;
             game.lockBoard = true;
             return;
         }
 
         if (game.matchPair === 2 || game.matchPair === 8) {
             clearInterval(game.countDown);
-            game.timer = 60;
+            //game.timer = 60;
             timerBarWidth = 100;
         }
     }, 1000);
@@ -147,11 +147,14 @@ function handleCardFlip() {
             if (game.level === 1 && game.matchPair === 2) {
                 console.log(game.matchPair, game.level);
                 setTimeout(() => {
+                    updateScore();
                     nextLevel();
+
                 }, 1500);
             } else if (game.level === 2 && game.matchPair === 8) {
                 console.log(game.matchPair, game.level);
                 setTimeout(() => {
+                    updateScore();
                     thirdLevel();
                 }, 1500);
             }
@@ -179,8 +182,10 @@ function nextLevel() {
     let linkedinCount = 0;
     let herokuCount = 0;
     game.level++;
-    countDownTimer();
+    //console.log(game.timer);
     game.timer = 60;
+    countDownTimer();
+
     document.querySelector(".game-stats__level--value").innerHTML = game.level;
     document.querySelector(".game-board").innerHTML = "";
     document.querySelector(".game-board").style.gridTemplateColumns = "1fr 1fr 1fr 1fr";;
@@ -251,8 +256,11 @@ function thirdLevel() {
     let awsCount = 0;
     let githubCount = 0;
     game.level++;
-    countDownTimer();
+
+    updateScore();
     game.timer = 60;
+    countDownTimer();
+
     document.querySelector(".game-stats__level--value").innerHTML = game.level;
     document.querySelector(".game-board").innerHTML = "";
     document.querySelector(".game-board").style.gridTemplateColumns = "1fr 1fr 1fr 1fr 1fr 1fr";;
@@ -375,15 +383,19 @@ function handleGameOver() {
 /*******************************************
 /     UI update
 /******************************************/
-function updateScore() {}
+function updateScore() {
+    console.log(game.timer);
+    game.score += Math.pow(game.level, 2) * game.timer;
+    document.querySelector(".game-stats__score--value").innerHTML = "" + game.score;
+}
 
-function updateTimerDisplay() {}
+// function updateTimerDisplay() {}
 
-/*******************************************
-/     bindings
-/******************************************/
-function bindStartButton() {}
+// /*******************************************
+// /     bindings
+// /******************************************/
+// function bindStartButton() {}
 
-function unBindCardClick(card) {}
+// function unBindCardClick() {}
 
-function bindCardClick() {}
+// function bindCardClick() {}

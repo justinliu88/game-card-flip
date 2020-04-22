@@ -123,6 +123,7 @@ body {
     background-repeat: no-repeat;
     position: absolute;
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .card__face--front {
