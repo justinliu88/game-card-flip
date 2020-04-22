@@ -110,7 +110,19 @@ function countDownTimer() {
             return;
         }
 
-        if (game.matchPair === 2 || game.matchPair === 8) {
+        if (game.matchPair === 2 && game.level === 1) {
+            clearInterval(game.countDown);
+            //game.timer = 60;
+            timerBarWidth = 100;
+        }
+
+        if (game.matchPair === 8 && game.level === 2) {
+            clearInterval(game.countDown);
+            //game.timer = 60;
+            timerBarWidth = 100;
+        }
+
+        if (game.matchPair === 18 && game.level === 3) {
             clearInterval(game.countDown);
             //game.timer = 60;
             timerBarWidth = 100;
@@ -341,7 +353,7 @@ function handleNewGame() {
     //TODO:debug purpose only
     //document.querySelector(".game-board").innerHTML = "";
 
-    checkPair();
+    placeInitialBoard();
 
     const cards = document.querySelectorAll(".card");
     cards.forEach(card => card.addEventListener('click', handleCardFlip));
@@ -351,7 +363,7 @@ function handleNewGame() {
     //console.log(cssCount, htmlCount);
 }
 
-function checkPair() {
+function placeInitialBoard() {
     let totalCards = 0;
     let cssCount = 0;
     let htmlCount = 0;
