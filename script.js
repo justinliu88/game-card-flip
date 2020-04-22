@@ -76,9 +76,13 @@ function startGame() {
     let button = document.querySelector(".game-stats__button");
     game.level = 1;
 
+
+
     // console.log(cardItem);
     button.addEventListener("click", () => {
         document.querySelector(".game-stats__button").innerHTML = "End Game";
+        handleGameOver();
+
         document.querySelector(".game-stats__level--value").innerHTML = game.level;
         countDownTimer();
 
@@ -120,6 +124,7 @@ function startGame() {
 function countDownTimer() {
     let timerBarWidth = 100;
     let countDown = setInterval(() => {
+        console.log(timerBarWidth);
         game.timer--;
         timerBarWidth -= 1.66;
         document.querySelector(".game-timer__bar").innerHTML = game.timer + "s";
@@ -130,13 +135,16 @@ function countDownTimer() {
             alert("GAME OVER!");
             game.timer = 60;
             game.lockBoard = true;
+
+        }
+
+        if (game.matchPair === 2 || game.matchPair === 8) {
+            clearInterval(countDown);
+            game.timer = 60;
+            timerBarWidth = 100;
         }
     }, 1000)
 
-    if (game.matchPair === 2 || game.matchPair === 8) {
-        clearInterval(countDown);
-        game.timer = 60;
-    }
 }
 
 function handleCardFlip() {
@@ -144,14 +152,15 @@ function handleCardFlip() {
         return;
     }
 
+    //console.log("clicked");
+    this.classList.add('card--flipped');
+
     if (this === game.previousCard) {
         this.classList.remove('card--flipped');
         game.previousCard = null;
         game.cardFlipped = false;
         return;
     }
-    //console.log("clicked");
-    this.classList.add('card--flipped');
 
     if (!game.cardFlipped) {
         game.cardFlipped = true;
@@ -252,10 +261,10 @@ function nextLevel() {
         const cards = document.querySelectorAll(".card");
         cards.forEach(card => card.addEventListener('click', handleCardFlip));
 
-        //clear all the flag
-        [game.previousCard, game.currentCard, game.cardFlipped, game.lockBoard, game.matchPair] = [null, null, false, false, 0];
-
     }
+    //clear all the flag
+    [game.previousCard, game.currentCard, game.cardFlipped, game.lockBoard, game.matchPair] = [null, null, false, false, 0];
+
 }
 
 function thirdLevel() {
@@ -340,7 +349,10 @@ function thirdLevel() {
     }
 }
 
-function handleGameOver() {}
+function handleGameOver() {
+    let endGame = document.querySelector(".game-stats__button").innerHTML;
+    console.log(endGame);
+}
 
 /*******************************************
 /     UI update
