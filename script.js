@@ -389,7 +389,7 @@ function placeInitialBoard() {
 function handleGameOver() {
     handleCardFlip();
     clearInterval(game.countDown);
-    alert("Congratulations, your score is 0");
+    alert(`Congratulations, your score is ${game.score}`);
 }
 
 /*******************************************
